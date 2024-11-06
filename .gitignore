@@ -1,0 +1,14 @@
+cpu
+*.vcd
+
+# Binary files
+*.elf
+*.bin
+*.hex
+*.o
+
+# settingfs directory
+.vscode
+
+# log
+*.log
