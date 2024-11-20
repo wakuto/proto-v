@@ -1,14 +1,18 @@
-cpu
-*.vcd
+rtl/obj_dir
+src/dump
 
 # Binary files
-*.elf
-*.bin
-*.hex
-*.o
+**/*.elf
+**/*.bin
+**/*.hex
+**/*.o
+**/*.dump
+test/isa/rv32*
 
 # settingfs directory
 .vscode
 
 # log
-*.log
+**/*.log
+**/*.vcd
+log/
