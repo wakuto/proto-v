@@ -1,5 +1,5 @@
 ROOT_DIR=../
-PREFIX=riscv32-unknown-elf-
+PREFIX=riscv64-unknown-elf-
 BANK_DIV_TOOL = $(ROOT_DIR)/test/tool/bank_division.py
 DUMP_DIR = dump
 
@@ -30,10 +30,10 @@ $(DUMP_DIR)/%.o: %.S
 	@if [ ! -d $(DUMP_DIR) ]; then \
 		echo "mkdir $(DUMP_DIR)"; mkdir $(DUMP_DIR); \
 	fi
-	$(PREFIX)as $< -c -o $@
+	$(PREFIX)as -march=rv32i -mabi=ilp32 $< -c -o $@
 
 $(DUMP_DIR)/%.elf: $(DUMP_DIR)/%.o link.ld
-	$(PREFIX)ld $< -Tlink.ld -o $@
+	$(PREFIX)ld -b elf32-littleriscv $< -Tlink.ld -o $@
   
 %.inst.bin: %.elf
 	$(PREFIX)objcopy -R .tohost -R .data -R .bss -O binary $< $@
@@ -42,7 +42,7 @@ $(DUMP_DIR)/%.elf: $(DUMP_DIR)/%.o link.ld
 	$(PREFIX)objcopy -R .text -R .text.init -O binary $< $@
 
 $(DUMP_DIR)/%.hex: $(DUMP_DIR)/%.bin
-	od -t x1 -A n -w1 -v $< > $@
+	hexdump -v -e '1/1 "%02x\n"' $< > $@
 
 %.bank0.hex %.bank1.hex %.bank2.hex %.bank3.hex: %.bin
 	python $(BANK_DIV_TOOL) $<

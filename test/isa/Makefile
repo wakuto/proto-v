@@ -30,7 +30,7 @@ all: $(INST_FILES:.bin=.hex) $(DATA_FILES:.bin=.hex) $(INST_HEX) $(DATA_HEX)
 	$(PREFIX)objcopy -R .text -R .text.init -O binary $< $@
 
 %.hex: %.bin
-	od -t x1 -A n -w1 -v $< > $@
+	hexdump -v -e '1/1 "%02x\n"' $< > $@
 
 %.bank0.hex %.bank1.hex %.bank2.hex %.bank3.hex: %.bin
 	python $(BANK_DIV_TOOL) $<
