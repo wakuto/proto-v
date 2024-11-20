@@ -2,7 +2,7 @@ MODULES = cpu_test.sv alu.sv top.sv core.sv decoder.sv dmemory.sv imemory.sv reg
 
 ROOT_DIR := $(realpath ../)
 
-VERILATOR_FLAGS=-Wno-TIMESCALEMOD -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC --threads `nproc` --trace
+VERILATOR_FLAGS=-Wno-TIMESCALEMOD -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC --threads `nproc` --trace -j `nproc`
 
 all: cpu
 
