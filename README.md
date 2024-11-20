@@ -1,14 +1,8 @@
 
 ## Prerequests
 
-- verilator (version 5.002 or higher)
-- make
-- python3
-- riscv-gnu-toolchain
-
 ```
-sudo pacman -S verilator make python 
-yay -S riscv-gnu-toolchain-bin
+sudo apt install automake build-essential gcc-riscv64-unknown-elf bsdmainutils python3 python-is-python3 verilator
 ```
 
 ## how to build
