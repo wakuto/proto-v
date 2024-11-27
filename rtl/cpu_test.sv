@@ -61,7 +61,8 @@ module cpu_test();
         .WEN_imem(WEN_imem_cpu),
         .A_imem(A_imem_cpu),
         .D_imem(D_imem_cpu),
-        .Q_imem(Q_imem)
+        .Q_imem(Q_imem),
+        .gpio_in(32'h87654321)
         );
 
     localparam mem_size = 4096;
