@@ -1,16 +1,15 @@
-MODULES = cpu_test.sv alu.sv top.sv core.sv decoder.sv dmemory.sv imemory.sv regfile.sv hazard.sv uart.sv sram.sv
+MODULES = cpu.sv alu.sv top.sv core.sv decoder.sv dmemory.sv imemory.sv regfile.sv hazard.sv uart.sv sram.sv gpio.sv
 
 ROOT_DIR := $(realpath ../)
 
 VERILATOR_FLAGS=-Wno-TIMESCALEMOD -Wno-WIDTHEXPAND -Wno-WIDTHTRUNC --threads `nproc` --trace -j `nproc`
 
-all: cpu
+TESTS = riscv_test
 
-cpu: $(MODULES)
-	verilator $(VERILATOR_FLAGS) --binary $(MODULES)
+all: $(TESTS:%=obj_dir/V%)
 
-lint:
-	verilator --lint-only -Wall --timing $(MODULES)
+obj_dir/V%: %.sv $(MODULES)
+	verilator $(VERILATOR_FLAGS) --binary $< $(MODULES)
 
 clean:
 	rm -rf ./obj_dir

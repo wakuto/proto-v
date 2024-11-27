@@ -13,7 +13,7 @@ isa() {
   log_file=./log/result-$(date "+%Y-%m-%d-%H-%M-%S").log
 
 	for name in ${hex_file}; do\
-	  ./rtl/obj_dir/Vcpu_test +inst=$name.inst.hex +data=$name.data.hex +log=$log_file +vcd=./log/vcd/$(basename $name).vcd;
+	  ./rtl/obj_dir/Vriscv_test +inst=$name.inst.bank@.hex +data=$name.data.bank@.hex +log=$log_file +vcd=./log/vcd/$(basename $name).vcd;
 	done
 
   echo ""
