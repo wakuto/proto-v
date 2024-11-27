@@ -1,1 +1,1 @@
-PREFIX=riscv64-unknown-elf-
+PREFIX=riscv32-unknown-elf-
