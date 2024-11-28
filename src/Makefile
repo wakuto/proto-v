@@ -1,5 +1,5 @@
 ROOT_DIR=../
-PREFIX=riscv32-unknown-elf-
+PREFIX=riscv64-unknown-elf-
 BANK_DIV_TOOL = $(ROOT_DIR)/test/tool/bank_division.py
 DUMP_DIR = dump
 
