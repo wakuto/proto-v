@@ -1,4 +1,4 @@
-from ubuntu:24.04
+from ubuntu:24.04 as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -18,6 +18,17 @@ RUN git clone https://github.com/riscv/riscv-gnu-toolchain
 WORKDIR /riscv-gnu-toolchain
 RUN ./configure --prefix=/opt/riscv --enable-multilib
 RUN make newlib -j$(nproc)
+
+from ubuntu:24.04 as runner
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get -y update --fix-missing && apt-get -y upgrade
+RUN apt-get install -y \
+  build-essential automake bsdmainutils \
+  python3 python-is-python3 verilator
+
+COPY --from=builder /opt/riscv /opt/riscv
 
 ENV PATH=$PATH:/opt/riscv/bin
 
