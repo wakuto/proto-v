@@ -19,13 +19,17 @@ jobs:
 
       - name: Run regression tests in Docker
         run: |
-          docker run --rm -v ${{ github.workspace }}:/proto-v -w /proto-v iwancof/proto-v-tester bash -c "
+          docker run --name container -v ${{ github.workspace }}:/proto-v -w /proto-v iwancof/proto-v-tester bash -c "
           set -e
           uname -a
           make run-regression | tee test_output.log
           test \${PIPESTATUS[0]} -eq 0"
 
-      
+      - name: Copy test results
+        run: |
+          docker cp container:/proto-v/test_output.log test_output.log
+          docker cp container:/proto-v/log log
+
       # テスト結果の確認
       - name: Analyze test results
         id: analyze-results
@@ -39,14 +43,14 @@ jobs:
       # ログファイルを圧縮して保存
       - name: Compress log files
         run: |
-          tar -czf logs.tar.gz ./log
+          tar -czf logs.tar.gz log
 
       # テスト失敗時にエラーを出力
       - name: Fail if tests failed
         if: env.FAILED == 'true'
         run: |
           echo "Test failed. Displaying logs below:"
-          cat ./log/*
+          cat ${{ github.workspace }}/log/*.log
           exit 1
 
       # アーティファクトとしてログファイルをアップロード
@@ -57,3 +61,5 @@ jobs:
           name: regression-test-logs
           path: logs.tar.gz
 
+      - name: Cleanup
+        run: docker rm container
