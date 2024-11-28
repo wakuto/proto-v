@@ -23,5 +23,6 @@ ENV PATH=$PATH:/opt/riscv/bin
 
 # checks
 RUN make --version
+RUN riscv64-unknown-elf-gcc --version
 RUN python3 --version
 RUN verilator --version
