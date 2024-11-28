@@ -23,8 +23,7 @@ from ubuntu:24.04 as runner
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get -y update --fix-missing && apt-get -y upgrade
-RUN apt-get install -y \
+RUN apt-get -y update --fix-missing && apt-get -y upgrade && apt-get install -y \
   build-essential automake bsdmainutils \
   python3 python-is-python3 verilator
 
