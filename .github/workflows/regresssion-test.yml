@@ -17,11 +17,14 @@ jobs:
         with:
           submodules: recursive
 
-      # Docker Imageを使用してテストを実行
       - name: Run regression tests in Docker
         run: |
           docker run --rm -v ${{ github.workspace }}:/proto-v -w /proto-v iwancof/proto-v-tester bash -c "
-          uname -a && make run-regression | tee test_output.log"
+          set -e
+          uname -a
+          make run-regression | tee test_output.log
+          test \${PIPESTATUS[0]} -eq 0"
+
       
       # テスト結果の確認
       - name: Analyze test results
