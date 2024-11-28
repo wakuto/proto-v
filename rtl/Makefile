@@ -1,4 +1,4 @@
-MODULES = cpu_test.sv alu.sv top.sv core.sv decoder.sv dmemory.sv imemory.sv regfile.sv hazard.sv uart.sv sram.sv
+MODULES = cpu_test.sv alu.sv top.sv core.sv decoder.sv dmemory.sv imemory.sv regfile.sv hazard.sv uart.sv sram.sv gpio.sv
 
 ROOT_DIR := $(realpath ../)
 
