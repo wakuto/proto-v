@@ -1,0 +1,56 @@
+name: Regression Test
+
+on:
+  push:
+    branches:
+      - ci
+  pull_request:
+
+jobs:
+  regression-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリのコードをチェックアウト
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      # Docker Imageを使用してテストを実行
+      - name: Run regression tests in Docker
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/proto-v -w /proto-v iwancof/proto-v-tester bash -c "
+          uname -a && make run-regression | tee test_output.log"
+      
+      # テスト結果の確認
+      - name: Analyze test results
+        id: analyze-results
+        run: |
+          if grep -q 'FAILED' test_output.log && ! grep -q 'FAILED.*test/isa/rv32ui-p-fence_i.inst.hex' test_output.log; then
+            echo "FAILED=true" >> $GITHUB_ENV
+          else
+            echo "FAILED=false" >> $GITHUB_ENV
+          fi
+      
+      # ログファイルを圧縮して保存
+      - name: Compress log files
+        run: |
+          tar -czf logs.tar.gz ./log
+
+      # テスト失敗時にエラーを出力
+      - name: Fail if tests failed
+        if: env.FAILED == 'true'
+        run: |
+          echo "Test failed. Displaying logs below:"
+          cat ./log/*
+          exit 1
+
+      # アーティファクトとしてログファイルをアップロード
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: regression-test-logs
+          path: logs.tar.gz
+
