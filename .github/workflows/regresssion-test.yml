@@ -2,8 +2,6 @@ name: Regression Test
 
 on:
   push:
-    branches:
-      - ci
   pull_request:
 
 jobs:
