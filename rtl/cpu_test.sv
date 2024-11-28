@@ -6,6 +6,7 @@ module cpu_test();
     logic rst;
     logic imem_rst;
     logic tx;
+    logic [31:0] gpio_out;
 
     logic CEN_dmem [0:3];
     logic GWEN_dmem [0:3];
@@ -62,7 +63,8 @@ module cpu_test();
         .A_imem(A_imem_cpu),
         .D_imem(D_imem_cpu),
         .Q_imem(Q_imem),
-        .gpio_in(32'h87654321)
+        .gpio_in(32'h87654321),
+        .gpio_out(gpio_out)
         );
 
     localparam mem_size = 4096;
