@@ -2,7 +2,6 @@ name: Regression Test
 
 on:
   push:
-  pull_request:
 
 jobs:
   regression-test:
