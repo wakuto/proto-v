@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # リポジトリのコードをチェックアウト
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -30,7 +29,6 @@ jobs:
           docker cp container:/proto-v/test_output.log test_output.log
           docker cp container:/proto-v/log /tmp/log
 
-      # テスト結果の確認
       - name: Analyze test results
         id: analyze-results
         run: |
@@ -40,12 +38,6 @@ jobs:
             echo "FAILED=false" >> $GITHUB_ENV
           fi
       
-      # ログファイルを圧縮して保存
-      - name: Compress log files
-        run: |
-          tar -czf logs.tar.gz -C /tmp log
-
-      # テスト失敗時にエラーを出力
       - name: Fail if tests failed
         if: env.FAILED == 'true'
         run: |
@@ -58,9 +50,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: regression-test-logs
-          path: logs.tar.gz
+          path: /tmp/log
           if-no-files-found: error
-          upload-compression: none
+          compression-level: 9
 
       - name: Cleanup
         if: always()
