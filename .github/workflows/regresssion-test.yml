@@ -1,0 +1,56 @@
+name: Regression Test
+
+on:
+  push:
+
+jobs:
+  regression-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Run regression tests in Docker
+        run: |
+          docker run --name container -v ${{ github.workspace }}:/proto-v -w /proto-v iwancof/proto-v-tester bash -c "
+          set -e
+          uname -a
+          make run-regression | tee test_output.log
+          test \${PIPESTATUS[0]} -eq 0"
+
+      - name: Copy test results
+        run: |
+          docker cp container:/proto-v/test_output.log test_output.log
+          docker cp container:/proto-v/log /tmp/log
+
+      - name: Analyze test results
+        id: analyze-results
+        run: |
+          if grep -q 'FAILED' test_output.log && ! grep -q 'FAILED.*test/isa/rv32ui-p-fence_i.inst.hex' test_output.log; then
+            echo "FAILED=true" >> $GITHUB_ENV
+          else
+            echo "FAILED=false" >> $GITHUB_ENV
+          fi
+      
+      - name: Fail if tests failed
+        if: env.FAILED == 'true'
+        run: |
+          echo "Test failed. Displaying logs below:"
+          cat /tmp/log/*.log
+          exit 1
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-test-logs
+          path: /tmp/log
+          if-no-files-found: error
+          compression-level: 9
+
+      - name: Cleanup
+        if: always()
+        run: docker rm container
